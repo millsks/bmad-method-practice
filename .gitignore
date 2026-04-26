@@ -92,3 +92,20 @@ ENV/
 # pixi environments
 .pixi/*
 !.pixi/config.toml
+
+# Node.js / React / TypeScript
+node_modules/
+**/node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend build/test caches
+.eslintcache
+.stylelintcache
+.parcel-cache/
+.vite/
+vite.svg
+*.tsbuildinfo
+coverage/
