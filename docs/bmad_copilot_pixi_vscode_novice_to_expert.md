@@ -1,6 +1,8 @@
 # BMAD Method with GitHub Copilot: Novice to Expert
 ### Python · Pixi · VS Code
 
+> **Update (2026-04-26):** Installation and verification steps in this guide are aligned with `bmad-method` installer output for version `6.5.0` and later.
+
 > **BMAD** stands for **B**uild **M**ore **A**rchitect **D**reams. It is an AI-driven development
 > framework that gives you a full virtual software team — Analyst, PM, Architect, Developer, QA —
 > each with a defined persona and structured workflow, all powered by GitHub Copilot inside VS Code.
@@ -118,11 +120,23 @@ git init
 npx bmad-method install
 ```
 
+You should see npm resolve at least version `6.5.0`:
+
+```text
+Need to install the following packages:
+bmad-method@6.5.0
+Ok to proceed? (y) y
+```
+
 When prompted:
 
 - **Installation location:** Current directory (press Enter)
-- **AI Tools:** Select **GitHub Copilot**
-- **Modules:** Select **BMad Method (BMM)**
+- **Official modules:** Select both **BMad Method Agile-AI Driven-Development** and **BMad Core Module**
+- **Community modules:** `No` (optional)
+- **Custom source (Git URL/local path):** `No` (unless needed)
+- **Integrations:** Select **GitHub Copilot**
+- **Core configuration:** provide your name/team, chat language, output language, and output folder (for example `_bmad-output`)
+- **Module configuration:** choose **Express Setup**
 
 ### Step 3: Verify the Installation
 
@@ -135,17 +149,19 @@ You should see:
 ```
 _bmad/
 _bmad-output/
-.github/
-.vscode/
+.agents/
+docs/
 ```
 
 ### What Was Created
 
-**`.github/chatmodes/`** — One `.chatmode.md` per agent.
+**`_bmad/`** — BMAD modules, config, manifests, and helper scripts.
 
-**`.github/copilot-instructions.md`** — Global Copilot context.
+**`_bmad-output/`** — Generated planning and implementation artifacts.
 
-**`.vscode/settings.json`** — Copilot chat agent settings.
+**`.agents/skills/`** — Installed GitHub Copilot skills (for example `bmad-help`, `bmad-agent-dev`, etc.).
+
+**`docs/`** — Project knowledge/document folder created by installer.
 
 ## 4. VS Code & GitHub Copilot Configuration
 
@@ -156,12 +172,12 @@ _bmad-output/
 | macOS | `Ctrl+Cmd+I` |
 | Windows/Linux | `Ctrl+Alt+I` |
 
-### Switching Between BMAD Agents
+### Switching Between BMAD Agent Modes
 
 In the Copilot Chat panel:
 
-1. Click the **chat mode selector** (dropdown at the top)
-2. Select the agent (`pm`, `dev`, `architect`, etc.)
+1. Click the **agent mode selector** (dropdown at the top)
+2. Select the agent mode (`pm`, `dev`, `architect`, etc.)
 3. Keep that chat dedicated to that workflow/role
 
 > **Rule:** Start a **new chat session** when switching agents or starting a new workflow.
@@ -186,7 +202,7 @@ In the Copilot Chat panel:
 
 ### Copilot Instructions File
 
-Extend `.github/copilot-instructions.md` to keep Copilot aligned:
+If your workspace uses a Copilot instructions file (for example `.github/copilot-instructions.md`), extend it to keep Copilot aligned:
 
 ```markdown
 # Project: My Python App
@@ -257,11 +273,13 @@ pixi add --pypi typer rich httpx
 my-python-app/
 ├── _bmad/
 ├── _bmad-output/
-├── .github/
-│   ├── chatmodes/
-│   └── copilot-instructions.md
+├── .agents/
+│   └── skills/
+├── docs/
 ├── .vscode/
-│   └── settings.json
+│   └── settings.json   # optional (recommended local IDE settings)
+├── .github/
+│   └── copilot-instructions.md   # optional workspace guidance for Copilot
 ├── src/
 │   └── my_python_app/
 │       ├── __init__.py
@@ -300,7 +318,7 @@ BMAD shorthand:
 
 ### 7.1 Brainstorming
 
-**New Copilot Chat → `analyst` mode**
+**New chat → `analyst` agent mode**
 
 ```
 /bmad-brainstorming
@@ -336,7 +354,7 @@ Python developers need a fast CLI tool to audit Pixi dependencies for known CVEs
 
 ### 8.1 Create the PRD
 
-**New chat → `pm` mode**
+**New chat → `pm` agent mode**
 
 ```
 /bmad-bmm-create-prd
@@ -361,7 +379,7 @@ Example user story:
 
 ### 8.2 UX Design (Optional)
 
-**New chat → `ux-designer` mode**
+**New chat → `ux-designer` agent mode**
 
 ```
 /bmad-bmm-create-ux-design
@@ -373,7 +391,7 @@ For CLI tools, define commands, flags, and output conventions.
 
 ### 9.1 Create Architecture
 
-**New chat → `architect` mode**
+**New chat → `architect` agent mode**
 
 ```
 /bmad-bmm-create-architecture
@@ -394,7 +412,7 @@ pyguard/
 
 ### 9.2 Create Epics and Stories
 
-**New chat → `pm` mode**
+**New chat → `pm` agent mode**
 
 ```
 /bmad-bmm-create-epics-and-stories
@@ -402,7 +420,7 @@ pyguard/
 
 ### 9.3 Implementation Readiness
 
-**New chat → `architect` mode**
+**New chat → `architect` agent mode**
 
 ```
 /bmad-bmm-check-implementation-readiness
@@ -412,7 +430,7 @@ pyguard/
 
 ### 10.1 Sprint Planning
 
-**New chat → `dev` mode**
+**New chat → `dev` agent mode**
 
 ```
 /bmad-bmm-sprint-planning
@@ -517,7 +535,7 @@ pixi run test
 
 ### 11.1 Project Context “Constitution”
 
-Create and maintain `_bmad-output/project-context.md` that captures:
+Create and maintain `docs/project-context.md` that captures:
 
 - stack decisions (Python 3.11, Pixi)
 - conventions (type hints, ruff, mypy)
@@ -526,7 +544,7 @@ Create and maintain `_bmad-output/project-context.md` that captures:
 
 ### 11.2 Quick Dev Flow (Small Tasks)
 
-**New chat → quick flow**
+**New chat → `quick-dev` agent mode**
 
 ```
 /bmad-bmm-quick-dev
@@ -536,7 +554,7 @@ Use for bug fixes and small features.
 
 ### 11.3 Adversarial QA Review
 
-**New chat → `qa` mode**
+**New chat → `qa` agent mode**
 
 Ask for harsh review:
 
@@ -557,7 +575,7 @@ This reduces context overload by splitting documents into sections.
 ### Agent loses context
 
 - Start a **new chat**
-- Select correct chatmode
+- Select the correct agent mode
 - Tell it explicitly which artifact(s) to read
 
 ### Slash commands not working
@@ -569,11 +587,11 @@ This reduces context overload by splitting documents into sections.
 
 ### Copilot suggests `pip install`
 
-Add an explicit rule to `.github/copilot-instructions.md`:
+Add an explicit rule to your Copilot instructions file (for example `.github/copilot-instructions.md`):
 
 ```markdown
 ## CRITICAL
-Never use pip/poetry. Always manage deps with Pixi (`pixi add ...`).
+Never use pip or Poetry. Always manage dependencies with Pixi (`pixi add ...`).
 ```
 
 ## 13. Quick Reference Cheat Sheet
@@ -607,7 +625,7 @@ pixi shell
 ### Golden Rules
 
 1. **Fresh chat per workflow**
-2. **Fresh chat per agent switch**
+2. **Fresh chat per agent mode switch**
 3. **Reference artifacts explicitly**
 4. **Use Pixi, not pip**
 5. **Commit after each story**
