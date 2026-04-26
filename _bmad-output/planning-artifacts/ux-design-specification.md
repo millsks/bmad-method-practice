@@ -47,11 +47,11 @@ Primary users are people with variable schedules who struggle with streak-first 
 
 ### Defining Experience
 
-HabitFlow’s core experience is a recovery-first daily loop centered on one primary action: a rapid restart check-in after interruption. The product should make it effortless for users to log today’s status (full, reduced, minimum, or interrupted) and immediately take the next best action without friction. The defining value moment is not streak perfection; it is fast continuity recovery in under 30 seconds.
+HabitFlow’s core experience is a recovery-first daily loop centered on one primary action: a rapid restart check-in after interruption. The product should make it effortless for users to log today’s status (full, reduced, minimum, or interrupted) and immediately take the next best action without friction. The defining value moment is not streak perfection; it is fast continuity recovery with a core action target of under 10 seconds median and a full successful restart session target of under 30 seconds.
 
 ### Platform Strategy
 
-v1 is desktop-first. The experience should be optimized for mouse/keyboard interaction and clear information density on desktop browsers. Mobile web support is deferred unless responsive behavior can be delivered with minimal additional complexity. v1 is always-online; no offline-first behavior is required in this phase.
+v1 is desktop-first in presentation and optimization. The experience should be optimized for mouse/keyboard interaction and clear information density on desktop browsers while preserving functional support across mobile-width, tablet-width, and desktop-width layouts. v1 is always-online; no offline-first behavior is required in this phase.
 
 ### Effortless Interactions
 
@@ -62,7 +62,7 @@ The following interactions must feel nearly automatic:
 - Prefilled recovery card with today’s minimum viable action.
 - Fast status logging path with minimal cognitive load and no extra screens.
 
-The target is that users can complete the core interruption-to-restart action path in under 30 seconds.
+The target is that users can complete the core action (open app → log outcome) in under 10 seconds median and complete a full interruption-to-restart session in under 30 seconds for successful flows.
 
 ### Critical Success Moments
 
@@ -229,9 +229,9 @@ This is the best fit for balancing speed and uniqueness, with a practical bias t
 
 ### 2.1 Defining Experience
 
-HabitFlow’s defining interaction is rapid recovery re-engagement after interruption. The product should feel easy to use because it brings users back into action immediately, without shame language or decision overload. The signature value is simple: if life disrupts routine, HabitFlow helps users restart in under 30 seconds.
+HabitFlow’s defining interaction is rapid recovery re-engagement after interruption. The product should feel easy to use because it brings users back into action immediately, without shame language or decision overload. The signature value is simple: if life disrupts routine, HabitFlow helps users log a recovery action in under 10 seconds median and complete a successful restart session in under 30 seconds.
 
-The phrase users should be able to say to friends is: “I missed a day and got back on track in under 30 seconds.”
+The phrase users should be able to say to friends is: “I missed a day and got back on track quickly without starting over.”
 
 ### 2.2 User Mental Model
 
@@ -249,7 +249,8 @@ The defining experience succeeds when users report the app feels easy and suppor
 
 - Reopen after interruption immediately surfaces a recovery-first panel/queue state.
 - Users can complete restart/check-in in one primary flow with minimal cognitive load.
-- Core interruption-to-restart path is completed in under 30 seconds for successful flows.
+- Core action path (open app → log outcome) is completed in under 10 seconds median.
+- Full interruption-to-restart path is completed in under 30 seconds for successful flows.
 - Users receive explicit saved-state confirmation (not ambiguous success).
 - Users leave each recovery session with a clear next best action.
 
@@ -401,7 +402,7 @@ This direction best matches HabitFlow’s defining interaction: immediate, suppo
 
 ### Journey 1 — First-Miss Rapid Recovery
 
-Primary goal: user misses a day, reopens HabitFlow, and restarts in under 30 seconds.
+Primary goal: user misses a day, reopens HabitFlow, logs a recovery action in under 10 seconds median, and completes a successful restart session in under 30 seconds.
 
 ```mermaid
 flowchart TD

@@ -593,23 +593,12 @@ So that I can restart habits with confidence.
 **And** if the action fails, I receive a clear retry path without losing context
 **And** all buttons and interactive elements are keyboard-reachable and properly labeled for screen readers.
 
-As a user,
-I want a purpose-built recovery card component,
-So that comeback actions are clear and fast in high-risk moments.
-
-**Acceptance Criteria:**
-
-Given interruption context exists
-When the recovery card renders
-**Then** states (`default`, `saving`, `success`, `error-retry`, `milestone`) are supported
-And primary and secondary actions are keyboard-focusable and semantically labeled.
-
-### Story 5.3: Build RecoveryQueuePanel Prioritization Component
+### Story 5.3: Users Can See Prioritized Next Recovery Actions
 
 Agent Prompt Starter: Implement Story 5.3 in `frontend/src/features/daily-queue`, `frontend/src/shared/ui`, and related tests only; build the prioritized `RecoveryQueuePanel` UI with top-3 and show-more behavior, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
 
 As a user,
-I want a dedicated prioritized queue panel,
+I want prioritized next actions that stay clear across screen sizes,
 So that I can see the next best recovery actions quickly.
 
 **Acceptance Criteria:**
@@ -617,9 +606,10 @@ So that I can see the next best recovery actions quickly.
 Given multiple habits with mixed interruption risk
 When the queue panel renders
 Then top-3 prioritized actions are visible first
-And progressive disclosure reveals additional actions without changing primary action order.
+And progressive disclosure reveals additional actions without changing primary action order
+And empty/error states provide a clear next step instead of a dead-end message.
 
-### Story 5.4: Add SaveStateBanner and ContinuityStatusPill
+### Story 5.4: Users Can Trust Save and Continuity States After Every Action
 
 Agent Prompt Starter: Implement Story 5.4 in `frontend/src/shared/ui`, affected recovery/logging features, and related tests only; add `SaveStateBanner` and `ContinuityStatusPill` components with text-plus-icon semantics, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
 
@@ -632,7 +622,8 @@ So that I trust the system state after every action.
 Given a core recovery or logging action is submitted
 When persistence transitions across pending, success, or failure
 Then `Saving…`, `Saved`, and `Retry` states are presented clearly
-And status meaning is conveyed by text plus icon semantics (not color-only).
+And status meaning is conveyed by text plus icon semantics (not color-only)
+And assistive-tech announcements communicate meaningful state transitions.
 
 ### Story 5.5: Accessibility Baseline for Core Flows
 
@@ -648,22 +639,6 @@ So that recovery workflows are usable without a mouse or color cues.
 **When** tested with keyboard and screen reader checks
 **Then** focus order, visible focus, and ARIA live announcements pass baseline criteria
 **And** contrast/semantic labeling meets WCAG 2.1 AA requirements.
-
-### Story 5.5: Implement Responsive and Accessible UI Infrastructure
-
-Agent Prompt Starter: Implement Story 5.5 in `frontend/src/shared/ui`, `frontend/src/styles`, and theme token integration only; wire calm recovery theme tokens, responsive utilities, and accessible component primitives, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
-
-As a developer building recovery flows,
-I want shared UI infrastructure that enforces calm design and accessibility,
-So that every feature inherits the recovery-first interaction patterns.
-
-**Acceptance Criteria:**
-
-**Given** the calm recovery design system
-**When** I build recovery components
-**Then** theme tokens (colors, typography, spacing) apply neutral semantics automatically
-**And** all primitive components (buttons, inputs, panels) include keyboard focus, ARIA labels, and contrast-safe states by default
-**And** responsive breakpoint utilities keep recovery-first action prominence consistent across widths.
 
 ## Epic 6: Adaptive Recommendations With User Control (Post-MVP Gated)
 
