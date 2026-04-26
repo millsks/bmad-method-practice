@@ -109,8 +109,8 @@ Phase 4: Implementation  → BUILD it, story by story
 ### Step 1: Create Your Project Directory
 
 ```bash
-mkdir my-python-app
-cd my-python-app
+mkdir habitflow-web
+cd habitflow-web
 git init
 ```
 
@@ -236,9 +236,9 @@ Example `pixi.toml` (starter):
 
 ```toml
 [project]
-name = "my-python-app"
+name = "habitflow-web"
 version = "0.1.0"
-description = "My BMAD-driven Python application"
+description = "HabitFlow: web app for tracking daily habits (Django + React)"
 channels = ["conda-forge"]
 platforms = ["linux-64", "osx-arm64", "win-64"]
 
@@ -248,45 +248,62 @@ python = ">=3.11"
 [pypi-dependencies]
 
 [tasks]
-start = "python src/main.py"
-test = "pytest tests/ -v"
-lint = "ruff check src/"
-format = "ruff format src/"
-typecheck = "mypy src/"
+start = "python backend/manage.py runserver"
+test = "pytest backend/tests/ -v"
+lint = "ruff check backend/"
+format = "ruff format backend/"
+typecheck = "mypy backend/"
+fe-build = "npm --prefix frontend run build"
+fe-dev = "npm --prefix frontend run dev"
 
 [feature.dev.dependencies]
 pytest = "*"
 ruff = "*"
 mypy = "*"
+django = "*"
+djangorestframework = "*"
 ```
 
 ### Add Dependencies
 
 ```bash
 pixi add python=3.11
-pixi add --pypi pytest ruff mypy
-pixi add --pypi typer rich httpx
+pixi add --pypi pytest ruff mypy django djangorestframework
+pixi add nodejs
+npm --prefix frontend install
 ```
 
 ### Recommended Structure
 
 ```
-my-python-app/
+habitflow-web/
 ├── _bmad/
 ├── _bmad-output/
 ├── .agents/
 │   └── skills/
 ├── docs/
+├── backend/
+│   ├── habitflow/
+│   │   ├── __init__.py
+│   │   ├── settings.py
+│   │   ├── urls.py
+│   ├── habits/
+│   │   ├── models.py
+│   │   ├── views.py
+│   │   ├── serializers.py
+│   ├── manage.py
+│   └── tests/
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   └── HabitDashboard.tsx
+│   │   └── App.tsx
+│   ├── package.json
+│   └── vite.config.js
 ├── .vscode/
-│   └── settings.json   # optional (recommended local IDE settings)
+│   └── settings.json   # optional
 ├── .github/
-│   └── copilot-instructions.md   # optional workspace guidance for Copilot
-├── src/
-│   └── my_python_app/
-│       ├── __init__.py
-│       └── main.py
-├── tests/
-│   └── test_main.py
+│   └── copilot-instructions.md   # optional
 ├── pixi.toml
 └── README.md
 ```
@@ -327,7 +344,7 @@ BMAD shorthand:
 
 Example prompt:
 
-> I want to build a CLI habit tracker that lets people define daily habits, log completions, and see streaks over time.
+> I want to build a web app where users can define daily habits, log completions through a dashboard, and visualize their streaks and progress over time.
 
 ### 7.2 Product Brief
 
@@ -338,17 +355,18 @@ Example prompt:
 Example excerpt:
 
 ```markdown
-# Product Brief: HabitFlow CLI
+# Product Brief: HabitFlow Web
 
 ## Problem Statement
-People who prefer the terminal need a quick way to track daily habits without opening a full mobile app or spreadsheet.
+Users want an intuitive web dashboard to build and maintain daily habits, track progress with visual streaks, and stay motivated through clear feedback.
 
 ## Core Capabilities
-1. Create and manage named habits
-2. Log a habit as completed for a given date
-3. Display current streaks and recent history
-4. Show daily and weekly summaries
-5. Export progress as JSON for reporting or backup
+1. User authentication and habit management UI
+2. Dashboard showing all habits with current streaks
+3. Click-to-complete habit logging for today or past dates
+4. Motivation visualizations (streak counters, progress charts)
+5. Export habit data and history as JSON
+6. Responsive design for desktop and tablet
 ```
 
 ## 8. Phase 2 — Planning (Beginner)
@@ -366,16 +384,17 @@ PRD should include user stories and acceptance criteria.
 Example user story:
 
 ```markdown
-### US-001: Log Habit Completion
-**As a** habit-tracking user,
-**I want to** run `habitflow complete reading`,
-**So that** I can record progress and keep my streak going.
+### US-001: Log Habit Completion from Dashboard
+**As a** user viewing my habit dashboard,
+**I want to** click a "Complete" button next to a habit,
+**So that** I can record today's progress and see my streak updated.
 
 **Acceptance Criteria:**
-- [ ] Creates the data file if it does not already exist
-- [ ] Records the habit completion for today's date by default
-- [ ] Prevents duplicate completions for the same habit on the same date
-- [ ] Shows the updated streak after logging the completion
+- [ ] Clicking "Complete" sends a POST request to the backend API
+- [ ] Backend prevents duplicate completions for the same habit on the same date
+- [ ] Dashboard immediately reflects the new completion visually
+- [ ] Streak counter updates without requiring a page refresh
+- [ ] Error message appears if the completion fails
 ```
 
 ### 8.2 UX Design (Optional)
@@ -401,13 +420,18 @@ For CLI tools, define commands, flags, and output conventions.
 Example component layout:
 
 ```text
-habitflow/
-├── __main__.py
-├── cli.py
-├── tracker.py
-├── storage.py
-├── reports.py
-└── models.py
+Backend (Django):
+├── habitflow/settings.py          # Django config
+├── habits/models.py               # Habit, Completion models
+├── habits/views.py                # API endpoints
+├── habits/serializers.py          # DRF serializers
+└── habits/tests.py                # API tests
+
+Frontend (React + TypeScript):
+├── src/components/HabitDashboard.tsx   # Main UI
+├── src/hooks/useHabits.ts              # API hooks
+├── src/types/Habit.ts                  # TypeScript types
+└── src/App.tsx                         # App shell
 ```
 
 ### 9.2 Create Epics and Stories
@@ -453,62 +477,82 @@ For each story:
    /bmad-bmm-code-review
    ```
 
-### Example Implementation: Calculate a Habit Streak
+### Example Implementation: Habit Model and Streak Calculation
 
-`src/habitflow/tracker.py`:
+`backend/habits/models.py`:
 
 ```python
+from django.db import models
+from django.contrib.auth.models import User
 from datetime import date, timedelta
 
 
-def calculate_streak(completions: set[date], today: date | None = None) -> int:
-  """Return the current streak length ending on `today`.
+class Habit(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
-  A streak counts consecutive completion dates ending today. If there is no
-  completion for today, the current streak is 0.
-    """
-  if not completions:
-    return 0
+    def current_streak(self) -> int:
+        """Calculate the current streak ending today."""
+        completions = self.completion_set.filter(
+            date__lte=date.today()
+        ).order_by("-date").values_list("date", flat=True)
 
-  current_day = today or date.today()
-  streak = 0
+        if not completions:
+            return 0
 
-  while current_day in completions:
-    streak += 1
-    current_day -= timedelta(days=1)
+        current_day = date.today()
+        streak = 0
 
-  return streak
+        for completion_date in completions:
+            if completion_date == current_day:
+                streak += 1
+                current_day -= timedelta(days=1)
+            else:
+                break
+
+        return streak
+
+
+class Completion(models.Model):
+    habit = models.ForeignKey(Habit, on_delete=models.CASCADE)
+    date = models.DateField()
+    logged_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("habit", "date")
 ```
 
-`tests/test_tracker.py`:
+`backend/habits/tests.py`:
 
 ```python
-from datetime import date
+from django.test import TestCase
+from django.contrib.auth.models import User
+from datetime import date, timedelta
 
-from habitflow.tracker import calculate_streak
-
-
-def test_calculate_streak_counts_consecutive_days() -> None:
-  completions = {
-    date(2026, 4, 24),
-    date(2026, 4, 25),
-    date(2026, 4, 26),
-  }
-
-  streak = calculate_streak(completions, today=date(2026, 4, 26))
-
-  assert streak == 3
+from .models import Habit, Completion
 
 
-def test_calculate_streak_returns_zero_without_today_completion() -> None:
-  completions = {
-    date(2026, 4, 24),
-    date(2026, 4, 25),
-  }
+class HabitStreakTest(TestCase):
+    def setUp(self):
+        self.user = User.objects.create_user(username="testuser")
+        self.habit = Habit.objects.create(user=self.user, name="Reading")
 
-  streak = calculate_streak(completions, today=date(2026, 4, 26))
+    def test_streak_counts_consecutive_days(self):
+        for i in range(3):
+            Completion.objects.create(
+                habit=self.habit,
+                date=date.today() - timedelta(days=2 - i)
+            )
 
-  assert streak == 0
+        self.assertEqual(self.habit.current_streak(), 3)
+
+    def test_streak_breaks_on_missing_day(self):
+        Completion.objects.create(habit=self.habit, date=date.today() - timedelta(days=2))
+        Completion.objects.create(habit=self.habit, date=date.today())
+
+        self.assertEqual(self.habit.current_streak(), 1)
 ```
 
 Run:
@@ -544,7 +588,7 @@ Use for bug fixes and small features.
 
 Ask for harsh review:
 
-> Review the habit-tracking storage and streak logic for duplicate entries, off-by-one errors, date handling, and error handling.
+> Review the habit API endpoints for proper authentication, streak calculation correctness, concurrent completion handling, and the React dashboard component for state management and error handling.
 
 ### 11.4 Shard Large Docs
 
