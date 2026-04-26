@@ -6,21 +6,62 @@ description = "HabitFlow: web app for tracking daily habits (Django + React)"
 platforms = ["osx-arm64"]
 version = "0.1.0"
 
-[tasks]
-test = "pytest -q"
-lint = "ruff check ."
-format = "ruff format ."
-typecheck = "mypy ."
-start = "python --version"
-build = "python -m build"
-ci = "pixi run lint && pixi run typecheck && pixi run test && pixi run build"
+# Feature environments for backend and frontend isolation
+[environments.backend]
+features = ["backend"]
+solve-group = "backend"
 
-[dependencies]
+[environments.frontend]
+features = ["frontend"]
+solve-group = "frontend"
+
+# Default environment includes both features
+[environments.default]
+features = ["backend", "frontend"]
+
+# Shared tasks for the workspace
+[tasks]
+test-backend = "pytest backend/test -q"
+test-frontend = "cd frontend && npm run test"
+install-frontend-deps = "cd frontend && npm install"
+test = { cmd = "pytest backend/test -q && cd frontend && npm run test", description = "Run all tests" }
+
+lint-backend = "ruff check backend/src backend/test"
+lint-frontend = "cd frontend && npm run lint"
+lint = { cmd = "ruff check backend/src backend/test && cd frontend && npm run lint", description = "Run all linting" }
+
+format-backend = "ruff format backend/src backend/test"
+format-frontend = "cd frontend && npm run format"
+format = { cmd = "ruff format backend/src backend/test && cd frontend && npm run format", description = "Format all code" }
+
+typecheck-backend = "mypy backend/src"
+typecheck-frontend = "cd frontend && npm run typecheck"
+typecheck = { cmd = "mypy backend/src && cd frontend && npm run typecheck", description = "Type check all code" }
+
+build-backend = "python -m build backend"
+build-frontend = "cd frontend && npm run build"
+build = { cmd = "python -m build backend && cd frontend && npm run build", description = "Build all packages" }
+
+ci = { cmd = "ruff check backend/src backend/test && cd frontend && npm run lint && cd .. && mypy backend/src && cd frontend && npm run typecheck && cd .. && pytest backend/test -q && cd frontend && npm run test && cd .. && python -m build backend && cd frontend && npm run build", description = "Full CI validation" }
+
+start-info = "echo 'HabitFlow development environment ready. Use pixi run start to launch frontend dev server.'"
+start = "cd frontend && npm run dev"
+install-playwright-browser = "cd frontend && npm exec playwright install chromium"
+screenshot-home = "cd frontend && npm exec playwright screenshot --device='Desktop Chrome' http://localhost:3000 ../docs/screenshots/story-1-0-bootstrap-home.png"
+
+# Backend feature
+[feature.backend.dependencies]
 python = ">=3.12,<3.13"
 
-[pypi-dependencies]
-build = "*"
-hatch = "*"
-mypy = "*"
-pytest = "*"
-ruff = "*"
+[feature.backend.pypi-dependencies]
+pytest = ">=7.4"
+pytest-cov = ">=4.1"
+ruff = ">=0.1.0"
+mypy = ">=1.5"
+black = ">=23.0"
+hatch = ">=1.7"
+build = ">=1.0"
+
+# Frontend feature
+[feature.frontend.dependencies]
+nodejs = ">=18,<19"
