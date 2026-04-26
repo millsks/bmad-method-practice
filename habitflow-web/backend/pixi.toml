@@ -1,0 +1,24 @@
+[workspace]
+channels = ["conda-forge"]
+name = "habitflow-backend"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+test = "pytest test -q"
+lint = "ruff check src test"
+format = "ruff format src test"
+typecheck = "mypy src"
+build = "python -m build"
+
+[dependencies]
+python = ">=3.12,<3.13"
+
+[pypi-dependencies]
+pytest = ">=7.4"
+pytest-cov = ">=4.1"
+ruff = ">=0.1.0"
+mypy = ">=1.5"
+black = ">=23.0"
+hatch = ">=1.7"
+build = ">=1.0"
