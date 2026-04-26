@@ -1,7 +1,8 @@
 [workspace]
 authors = ["Kevin Mills <millsks@gmail.com>"]
 channels = ["conda-forge"]
-name = "project-01"
+name = "habitflow-web"
+description = "HabitFlow: web app for tracking daily habits (Django + React)"
 platforms = ["osx-arm64"]
 version = "0.1.0"
 
