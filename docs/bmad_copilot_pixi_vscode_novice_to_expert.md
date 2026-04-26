@@ -172,15 +172,16 @@ docs/
 | macOS | `Ctrl+Cmd+I` |
 | Windows/Linux | `Ctrl+Alt+I` |
 
-### Switching Between BMAD Agent Modes
+### Using BMAD Skills in Copilot Chat
 
 In the Copilot Chat panel:
 
-1. Click the **agent mode selector** (dropdown at the top)
-2. Select the agent mode (`pm`, `dev`, `architect`, etc.)
-3. Keep that chat dedicated to that workflow/role
+1. Start a **new chat**
+2. Run the BMAD slash command for your workflow (for example `/bmad-bmm-create-prd`)
+3. Keep that chat dedicated to that single workflow/role
+4. If your VS Code build shows a mode selector, you can optionally choose a mode — BMAD still runs from slash commands
 
-> **Rule:** Start a **new chat session** when switching agents or starting a new workflow.
+> **Rule:** Start a **new chat session** when switching workflows.
 
 ### Recommended `.vscode/settings.json`
 
@@ -318,7 +319,7 @@ BMAD shorthand:
 
 ### 7.1 Brainstorming
 
-**New chat → `analyst` agent mode**
+**New chat → analysis workflow**
 
 ```
 /bmad-brainstorming
@@ -354,7 +355,7 @@ Python developers need a fast CLI tool to audit Pixi dependencies for known CVEs
 
 ### 8.1 Create the PRD
 
-**New chat → `pm` agent mode**
+**New chat → planning workflow (PM)**
 
 ```
 /bmad-bmm-create-prd
@@ -379,7 +380,7 @@ Example user story:
 
 ### 8.2 UX Design (Optional)
 
-**New chat → `ux-designer` agent mode**
+**New chat → UX workflow**
 
 ```
 /bmad-bmm-create-ux-design
@@ -391,7 +392,7 @@ For CLI tools, define commands, flags, and output conventions.
 
 ### 9.1 Create Architecture
 
-**New chat → `architect` agent mode**
+**New chat → architecture workflow**
 
 ```
 /bmad-bmm-create-architecture
@@ -412,7 +413,7 @@ pyguard/
 
 ### 9.2 Create Epics and Stories
 
-**New chat → `pm` agent mode**
+**New chat → planning workflow (PM)**
 
 ```
 /bmad-bmm-create-epics-and-stories
@@ -420,7 +421,7 @@ pyguard/
 
 ### 9.3 Implementation Readiness
 
-**New chat → `architect` agent mode**
+**New chat → architecture readiness workflow**
 
 ```
 /bmad-bmm-check-implementation-readiness
@@ -430,7 +431,7 @@ pyguard/
 
 ### 10.1 Sprint Planning
 
-**New chat → `dev` agent mode**
+**New chat → implementation workflow (Dev)**
 
 ```
 /bmad-bmm-sprint-planning
@@ -544,7 +545,7 @@ Create and maintain `docs/project-context.md` that captures:
 
 ### 11.2 Quick Dev Flow (Small Tasks)
 
-**New chat → `quick-dev` agent mode**
+**New chat → quick-dev workflow**
 
 ```
 /bmad-bmm-quick-dev
@@ -554,7 +555,7 @@ Use for bug fixes and small features.
 
 ### 11.3 Adversarial QA Review
 
-**New chat → `qa` agent mode**
+**New chat → QA review workflow**
 
 Ask for harsh review:
 
@@ -575,7 +576,7 @@ This reduces context overload by splitting documents into sections.
 ### Agent loses context
 
 - Start a **new chat**
-- Select the correct agent mode
+- Run the correct BMAD slash command for that workflow
 - Tell it explicitly which artifact(s) to read
 
 ### Slash commands not working
@@ -625,7 +626,7 @@ pixi shell
 ### Golden Rules
 
 1. **Fresh chat per workflow**
-2. **Fresh chat per agent mode switch**
+2. **Fresh chat per workflow switch**
 3. **Reference artifacts explicitly**
 4. **Use Pixi, not pip**
 5. **Commit after each story**
