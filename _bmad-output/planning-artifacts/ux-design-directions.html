@@ -1,0 +1,256 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HabitFlow UX Design Directions</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --panel: #111827;
+      --muted: #94a3b8;
+      --text: #e5e7eb;
+      --line: #1f2937;
+      --accent: #60a5fa;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Roboto, system-ui, -apple-system, Segoe UI, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+    }
+    .wrap { max-width: 1320px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 8px; font-size: 28px; }
+    p { color: var(--muted); margin: 0 0 18px; }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+    .btn {
+      border: 1px solid #334155;
+      background: #0b1220;
+      color: #cbd5e1;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 13px;
+    }
+    .btn.active { border-color: var(--accent); color: white; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+    .direction {
+      border: 1px solid var(--line);
+      background: var(--panel);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+    .head {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .name { font-weight: 700; font-size: 14px; }
+    .tag { font-size: 11px; color: var(--muted); }
+    .meta { padding: 10px 14px; font-size: 12px; color: #cbd5e1; border-bottom: 1px solid var(--line); }
+
+    .frame {
+      background: #f8fafc;
+      color: #0f172a;
+      margin: 14px;
+      border-radius: 12px;
+      border: 1px solid #e2e8f0;
+      padding: 12px;
+    }
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: #475569;
+    }
+    .card {
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 10px;
+      margin-bottom: 10px;
+      background: white;
+    }
+    .title { font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+    .sub { font-size: 12px; color: #475569; margin-bottom: 10px; }
+
+    .row { display: flex; gap: 8px; }
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 11px;
+      border: 1px solid #dbeafe;
+      color: #1d4ed8;
+      background: #eff6ff;
+    }
+    .cta {
+      border: none;
+      border-radius: 8px;
+      padding: 8px 10px;
+      font-size: 12px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .cta-primary { background: #2563eb; color: white; }
+    .cta-secondary { background: #f1f5f9; color: #0f172a; }
+
+    .hide-low .direction[data-priority='low'] { display: none; }
+    .one-col .cards { grid-template-columns: 1fr; }
+
+    .d1 .frame { background: #f7fbff; }
+    .d1 .cta-primary { background: #3b82f6; }
+    .d1 .pill { background: #eef6ff; color: #1d4ed8; border-color: #bfdbfe; }
+
+    .d2 .frame { background: #f3f8ff; }
+    .d2 .cta-primary { background: #0ea5e9; }
+    .d2 .pill { background: #e6f8ff; color: #0369a1; border-color: #bae6fd; }
+
+    .d3 .frame { background: #f8fafc; }
+    .d3 .cta-primary { background: #334155; }
+    .d3 .pill { background: #f1f5f9; color: #334155; border-color: #cbd5e1; }
+
+    .d4 .frame { background: #f8fffb; }
+    .d4 .cta-primary { background: #16a34a; }
+    .d4 .pill { background: #ecfdf3; color: #166534; border-color: #86efac; }
+
+    .d5 .frame { background: #fff9f7; }
+    .d5 .cta-primary { background: #ea580c; }
+    .d5 .pill { background: #fff7ed; color: #9a3412; border-color: #fdba74; }
+
+    .d6 .frame { background: #f6f5ff; }
+    .d6 .cta-primary { background: #7c3aed; }
+    .d6 .pill { background: #f3e8ff; color: #6b21a8; border-color: #d8b4fe; }
+
+    @media (max-width: 980px) {
+      .cards { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap" id="app">
+    <h1>HabitFlow Design Directions</h1>
+    <p>Step 9 visual exploration: six interface directions for the recovery-first desktop experience. Compare layout density, tone, and emphasis before selecting one base direction.</p>
+
+    <div class="toolbar">
+      <button class="btn active" onclick="toggleLow(this)">Toggle Low-Priority Directions</button>
+      <button class="btn" onclick="toggleGrid(this)">Toggle Single-Column Review</button>
+    </div>
+
+    <div class="cards">
+      <section class="direction d1" data-priority="high">
+        <div class="head"><span class="name">Direction 1 — Calm Recovery</span><span class="tag">Recommended Base</span></div>
+        <div class="meta">Soft blue emphasis, low cognitive load, strong recovery card hierarchy.</div>
+        <div class="frame">
+          <div class="top"><span>Today</span><span>Desktop · MUI</span></div>
+          <div class="card">
+            <div class="title">Welcome back—today is a fresh start.</div>
+            <div class="sub">You’re one action away from regaining momentum.</div>
+            <div class="row"><button class="cta cta-primary">Restart with Minimum</button><button class="cta cta-secondary">Quick Plan</button></div>
+          </div>
+          <span class="pill">Continuity focus</span>
+        </div>
+      </section>
+
+      <section class="direction d2" data-priority="high">
+        <div class="head"><span class="name">Direction 2 — Focused Momentum</span><span class="tag">Action Driven</span></div>
+        <div class="meta">More energetic primary CTA and faster visual rhythm.</div>
+        <div class="frame">
+          <div class="top"><span>Recovery Queue</span><span>3 interrupted habits</span></div>
+          <div class="card">
+            <div class="title">Start now in under 30 seconds</div>
+            <div class="sub">Ranked top-3 by easiest comeback.</div>
+            <div class="row"><button class="cta cta-primary">Restart Now</button><button class="cta cta-secondary">Show Top 3</button></div>
+          </div>
+          <span class="pill">Speed emphasis</span>
+        </div>
+      </section>
+
+      <section class="direction d3" data-priority="high">
+        <div class="head"><span class="name">Direction 3 — Minimal Neutral</span><span class="tag">Utility First</span></div>
+        <div class="meta">Neutral palette with focused action surfaces and less emotional weight.</div>
+        <div class="frame">
+          <div class="top"><span>Daily Queue</span><span>Compact view</span></div>
+          <div class="card">
+            <div class="title">One step to re-engage</div>
+            <div class="sub">No extra visuals. Direct, calm, and fast.</div>
+            <div class="row"><button class="cta cta-primary">Log Today</button><button class="cta cta-secondary">Skip to Plan</button></div>
+          </div>
+          <span class="pill">Low-noise UI</span>
+        </div>
+      </section>
+
+      <section class="direction d4" data-priority="medium">
+        <div class="head"><span class="name">Direction 4 — Continuity Dashboard</span><span class="tag">Data Balanced</span></div>
+        <div class="meta">Adds compact recovery metrics after primary action completion.</div>
+        <div class="frame">
+          <div class="top"><span>Continuity maintained</span><span>Saved 9:42 AM</span></div>
+          <div class="card">
+            <div class="title">Recovery complete</div>
+            <div class="sub">Next best action: Walk 5 min at 5:30 PM.</div>
+            <div class="row"><button class="cta cta-primary">Set Reminder</button><button class="cta cta-secondary">Done</button></div>
+          </div>
+          <span class="pill">Post-action insights</span>
+        </div>
+      </section>
+
+      <section class="direction d5" data-priority="low">
+        <div class="head"><span class="name">Direction 5 — Warm Encouragement</span><span class="tag">Emotion Forward</span></div>
+        <div class="meta">Higher warmth and celebratory tone; useful for milestone moments.</div>
+        <div class="frame">
+          <div class="top"><span>Rebound Milestone</span><span>Day 3 back</span></div>
+          <div class="card">
+            <div class="title">You’re rebuilding momentum 🎉</div>
+            <div class="sub">Celebrate milestones, not every routine action.</div>
+            <div class="row"><button class="cta cta-primary">Keep Going</button><button class="cta cta-secondary">View Streak</button></div>
+          </div>
+          <span class="pill">Milestone celebration</span>
+        </div>
+      </section>
+
+      <section class="direction d6" data-priority="low">
+        <div class="head"><span class="name">Direction 6 — Adaptive Coach</span><span class="tag">Future Facing</span></div>
+        <div class="meta">Preview of future optional coaching and device-integrated suggestions.</div>
+        <div class="frame">
+          <div class="top"><span>Coach Suggestion</span><span>Optional</span></div>
+          <div class="card">
+            <div class="title">Try a reduced target today</div>
+            <div class="sub">Preview-and-apply only. User stays in control.</div>
+            <div class="row"><button class="cta cta-primary">Preview Plan</button><button class="cta cta-secondary">Not Now</button></div>
+          </div>
+          <span class="pill">Future extension</span>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    function toggleLow(btn) {
+      const app = document.getElementById('app');
+      app.classList.toggle('hide-low');
+      btn.classList.toggle('active');
+    }
+    function toggleGrid(btn) {
+      const app = document.getElementById('app');
+      app.classList.toggle('one-col');
+      btn.classList.toggle('active');
+    }
+  </script>
+</body>
+</html>

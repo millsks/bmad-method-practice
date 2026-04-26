@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>HabitFlow Color Themes</title>
+  <style>
+    body { margin: 0; font-family: Inter, Roboto, system-ui, sans-serif; background: #0f172a; color: #e2e8f0; }
+    .wrap { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    h1 { margin: 0 0 8px; }
+    p { color: #94a3b8; }
+    .grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+    .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; overflow: hidden; }
+    .head { padding: 12px; border-bottom: 1px solid #1f2937; font-weight: 700; }
+    .swatches { padding: 12px; display: grid; gap: 8px; }
+    .swatch { display: flex; align-items: center; gap: 10px; font-size: 12px; color: #cbd5e1; }
+    .dot { width: 20px; height: 20px; border-radius: 6px; border: 1px solid rgba(255,255,255,.2); }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <h1>HabitFlow Color Theme Visualizer</h1>
+    <p>Visual reference for Step 8 foundations. Direction 1 (Calm Recovery) is the selected v1 baseline.</p>
+    <div class="grid">
+      <section class="card">
+        <div class="head">Calm Recovery (Selected)</div>
+        <div class="swatches">
+          <div class="swatch"><span class="dot" style="background:#3B82F6"></span>Primary #3B82F6</div>
+          <div class="swatch"><span class="dot" style="background:#14B8A6"></span>Secondary #14B8A6</div>
+          <div class="swatch"><span class="dot" style="background:#22C55E"></span>Success #22C55E</div>
+          <div class="swatch"><span class="dot" style="background:#F59E0B"></span>Warning #F59E0B</div>
+          <div class="swatch"><span class="dot" style="background:#EF4444"></span>Error #EF4444</div>
+          <div class="swatch"><span class="dot" style="background:#64748B"></span>Neutral #64748B</div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="head">Focused Momentum</div>
+        <div class="swatches">
+          <div class="swatch"><span class="dot" style="background:#0EA5E9"></span>Primary #0EA5E9</div>
+          <div class="swatch"><span class="dot" style="background:#22D3EE"></span>Secondary #22D3EE</div>
+          <div class="swatch"><span class="dot" style="background:#10B981"></span>Success #10B981</div>
+          <div class="swatch"><span class="dot" style="background:#F59E0B"></span>Warning #F59E0B</div>
+          <div class="swatch"><span class="dot" style="background:#F43F5E"></span>Error #F43F5E</div>
+          <div class="swatch"><span class="dot" style="background:#475569"></span>Neutral #475569</div>
+        </div>
+      </section>
+      <section class="card">
+        <div class="head">Minimal Neutral</div>
+        <div class="swatches">
+          <div class="swatch"><span class="dot" style="background:#334155"></span>Primary #334155</div>
+          <div class="swatch"><span class="dot" style="background:#64748B"></span>Secondary #64748B</div>
+          <div class="swatch"><span class="dot" style="background:#16A34A"></span>Success #16A34A</div>
+          <div class="swatch"><span class="dot" style="background:#CA8A04"></span>Warning #CA8A04</div>
+          <div class="swatch"><span class="dot" style="background:#DC2626"></span>Error #DC2626</div>
+          <div class="swatch"><span class="dot" style="background:#94A3B8"></span>Neutral #94A3B8</div>
+        </div>
+      </section>
+    </div>
+  </div>
+</body>
+</html>
