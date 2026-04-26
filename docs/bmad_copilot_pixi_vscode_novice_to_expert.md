@@ -327,7 +327,7 @@ BMAD shorthand:
 
 Example prompt:
 
-> I want to build a CLI tool that monitors Python dependencies for vulnerabilities and outdated versions in Pixi projects.
+> I want to build a CLI habit tracker that lets people define daily habits, log completions, and see streaks over time.
 
 ### 7.2 Product Brief
 
@@ -338,17 +338,17 @@ Example prompt:
 Example excerpt:
 
 ```markdown
-# Product Brief: PyGuard CLI
+# Product Brief: HabitFlow CLI
 
 ## Problem Statement
-Python developers need a fast CLI tool to audit Pixi dependencies for known CVEs and outdated packages.
+People who prefer the terminal need a quick way to track daily habits without opening a full mobile app or spreadsheet.
 
 ## Core Capabilities
-1. Scan `pixi.toml` dependencies
-2. Query vulnerability sources (e.g., OSV)
-3. Display a readable terminal report
-4. Provide `--json` output for CI
-5. Exit non-zero when issues found
+1. Create and manage named habits
+2. Log a habit as completed for a given date
+3. Display current streaks and recent history
+4. Show daily and weekly summaries
+5. Export progress as JSON for reporting or backup
 ```
 
 ## 8. Phase 2 — Planning (Beginner)
@@ -366,16 +366,16 @@ PRD should include user stories and acceptance criteria.
 Example user story:
 
 ```markdown
-### US-001: Scan Dependencies
-**As a** Python developer,
-**I want to** run `pyguard scan`,
-**So that** I can see vulnerable and outdated packages.
+### US-001: Log Habit Completion
+**As a** habit-tracking user,
+**I want to** run `habitflow complete reading`,
+**So that** I can record progress and keep my streak going.
 
 **Acceptance Criteria:**
-- [ ] Reads `pixi.toml` by default
-- [ ] Shows CVE IDs and severity
-- [ ] Shows current vs latest version
-- [ ] Exits with code 1 if vulnerabilities found
+- [ ] Creates the data file if it does not already exist
+- [ ] Records the habit completion for today's date by default
+- [ ] Prevents duplicate completions for the same habit on the same date
+- [ ] Shows the updated streak after logging the completion
 ```
 
 ### 8.2 UX Design (Optional)
@@ -401,13 +401,12 @@ For CLI tools, define commands, flags, and output conventions.
 Example component layout:
 
 ```text
-pyguard/
+habitflow/
 ├── __main__.py
 ├── cli.py
-├── scanner.py
-├── osv_client.py
-├── pypi_client.py
-├── reporter.py
+├── tracker.py
+├── storage.py
+├── reports.py
 └── models.py
 ```
 
@@ -454,76 +453,62 @@ For each story:
    /bmad-bmm-code-review
    ```
 
-### Example Implementation: Parse `pixi.toml`
+### Example Implementation: Calculate a Habit Streak
 
-`src/pyguard/scanner.py`:
+`src/habitflow/tracker.py`:
 
 ```python
-import tomllib
-from pathlib import Path
+from datetime import date, timedelta
 
 
-def parse_pixi_toml(file_path: Path | None = None) -> dict[str, str]:
-    """Parse a pixi.toml file and return a dict of dependency name → version spec.
+def calculate_streak(completions: set[date], today: date | None = None) -> int:
+  """Return the current streak length ending on `today`.
 
-    Notes:
-        - This is a simplified example. Real implementations should also parse
-          `[pypi-dependencies]`, optional features, and platform-specific sections.
-
-    Raises:
-        FileNotFoundError: If pixi.toml is missing.
-        ValueError: If TOML is invalid.
+  A streak counts consecutive completion dates ending today. If there is no
+  completion for today, the current streak is 0.
     """
-    file_path = file_path or (Path.cwd() / "pixi.toml")
-    if not file_path.exists():
-        raise FileNotFoundError(f"pixi.toml not found at {file_path}")
+  if not completions:
+    return 0
 
-    with file_path.open("rb") as f:
-        data = tomllib.load(f)
+  current_day = today or date.today()
+  streak = 0
 
-    deps = data.get("dependencies", {})
-    # Common convention: ignore python itself for scanning
-    deps.pop("python", None)
-    return {k: str(v) for k, v in deps.items()}
+  while current_day in completions:
+    streak += 1
+    current_day -= timedelta(days=1)
+
+  return streak
 ```
 
-`tests/test_scanner.py`:
+`tests/test_tracker.py`:
 
 ```python
-from pathlib import Path
+from datetime import date
 
-import pytest
-
-from pyguard.scanner import parse_pixi_toml
+from habitflow.tracker import calculate_streak
 
 
-@pytest.fixture
-def sample_pixi_toml(tmp_path: Path) -> Path:
-    content = """
-[project]
-name = "demo"
-version = "0.1.0"
-channels = ["conda-forge"]
-platforms = ["linux-64"]
+def test_calculate_streak_counts_consecutive_days() -> None:
+  completions = {
+    date(2026, 4, 24),
+    date(2026, 4, 25),
+    date(2026, 4, 26),
+  }
 
-[dependencies]
-python = ">=3.11"
-requests = ">=2.31"
-numpy = ">=1.26"
-"""
-    p = tmp_path / "pixi.toml"
-    p.write_text(content)
-    return p
+  streak = calculate_streak(completions, today=date(2026, 4, 26))
+
+  assert streak == 3
 
 
-def test_parse_pixi_toml(sample_pixi_toml: Path) -> None:
-    deps = parse_pixi_toml(sample_pixi_toml)
-    assert deps == {"requests": ">=2.31", "numpy": ">=1.26"}
+def test_calculate_streak_returns_zero_without_today_completion() -> None:
+  completions = {
+    date(2026, 4, 24),
+    date(2026, 4, 25),
+  }
 
+  streak = calculate_streak(completions, today=date(2026, 4, 26))
 
-def test_parse_pixi_toml_missing_file(tmp_path: Path) -> None:
-    with pytest.raises(FileNotFoundError):
-        parse_pixi_toml(tmp_path / "pixi.toml")
+  assert streak == 0
 ```
 
 Run:
@@ -559,7 +544,7 @@ Use for bug fixes and small features.
 
 Ask for harsh review:
 
-> Review the OSV client for security issues, timeouts, caching correctness, and error handling.
+> Review the habit-tracking storage and streak logic for duplicate entries, off-by-one errors, date handling, and error handling.
 
 ### 11.4 Shard Large Docs
 
