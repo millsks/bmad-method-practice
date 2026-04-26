@@ -1,0 +1,25 @@
+[workspace]
+authors = ["Kevin Mills <millsks@gmail.com>"]
+channels = ["conda-forge"]
+name = "project-02"
+platforms = ["osx-arm64"]
+version = "0.1.0"
+
+[tasks]
+test = "pytest -q"
+lint = "ruff check ."
+format = "ruff format ."
+typecheck = "mypy ."
+start = "python --version"
+build = "python -m build"
+ci = "pixi run lint && pixi run typecheck && pixi run test && pixi run build"
+
+[dependencies]
+python = ">=3.12,<3.13"
+
+[pypi-dependencies]
+build = "*"
+hatch = "*"
+mypy = "*"
+pytest = "*"
+ruff = "*"
