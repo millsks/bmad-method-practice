@@ -40,7 +40,7 @@ releaseMode: phased
 
 HabitFlow is an open-source, recovery-first web habit tracker. Its core premise is that habit abandonment is not caused by an inability to start — it is caused by the absence of a recovery pathway after the first interruption. Most trackers convert a missed day into a psychological stop state through punitive language, broken streak visuals, and no actionable next step. HabitFlow eliminates that failure mode by treating every interruption as a managed, expected event with an immediate comeback workflow.
 
-The primary user promise: **if you miss a day, HabitFlow helps you restart in under 30 seconds.**
+The primary user promise: **if you miss a day, HabitFlow helps you log a recovery action in under 10 seconds median and complete a successful restart session in under 30 seconds.**
 
 v1 targets the maintainer (Kevin) and a small cohort of 3–8 friends as a structured validation study, not a market launch. Success is defined as measurable improvement in recovery-within-24-hours rate and post-interruption 7-day continuity relative to a baseline period — not growth, acquisition, or monetization.
 

@@ -70,6 +70,24 @@ Critical constraints captured from the PRD and user guidance:
 - Enables backend-only, frontend-only, and full-stack execution modes.
 - Enforces a single command contract for local dev and CI.
 
+### ADR-005: Frontend Design System and Recovery UI Ownership
+
+**Decision:** MUI (Material-UI) is the required frontend component foundation for MVP. Theme tokens are owned in `frontend/src/styles`. Shared recovery UI primitives are owned in `frontend/src/shared/ui` with named recovery components (`RecoveryCard`, `RecoveryQueuePanel`, `SaveStateBanner`, `ContinuityStatusPill`) as architecture-level boundaries, not ad-hoc implementation details.
+
+**Why:**
+
+- Keeps design, architecture, and implementation aligned from the start.
+- MUI provides WCAG-compliant primitives and responsive utilities reducing accessibility work.
+- Named recovery components enforce consistent recovery-first interaction semantics across features.
+- Clear ownership boundaries reduce ad-hoc refactoring later.
+
+**Implementation Notes:**
+
+- Token ownership: `frontend/src/styles/tokens.ts` defines calm recovery semantics (neutral colors, accessible contrast, supportive typography).
+- Shared primitives: `frontend/src/shared/ui/*` components inherit tokens automatically and expose recovery-specific APIs.
+- Feature modules rely solely on shared UI; no feature-to-feature UI imports.
+- Recovery components used across daily-queue, comeback-card, reflection-chips, and weekly-summary features.
+
 ## Recommended Project Structure
 
 ```text

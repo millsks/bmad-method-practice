@@ -213,6 +213,22 @@ FR40: Epic 5 - UX Accessibility & Responsive Quality
 
 Deliver a strong recovery-ready habit foundation where users configure meaningful completion tiers, preserve history, and interact with supportive language from day one.
 
+### Story 1.0: Bootstrap HabitFlow Workspace and Pixi Feature Environments
+
+Agent Prompt Starter: Implement Story 1.0 in `habitflow-web/`, `backend/pixi.toml` or Pixi feature setup, and integration validation only; scaffold baseline project structure with Pixi environment features, backend/frontend separation, and baseline validation tasks, then validate with `pixi run ci`.
+
+As a developer,
+I want the `habitflow-web/` workspace scaffolded with Pixi-managed environments, backend/frontend boundaries, and baseline validation tasks,
+So that feature stories can be implemented on a stable, reproducible foundation.
+
+**Acceptance Criteria:**
+
+**Given** a clean implementation root under `habitflow-web/`
+**When** the bootstrap story is completed
+**Then** `backend/src`, `backend/test`, `frontend/src`, and `frontend/test` exist with baseline project skeletons aligned to architecture constraints
+**And** Pixi tasks and Pixi environment features exist for backend, frontend, and full-stack validation flows
+**And** the initial validation path for changed areas is documented and executable through Pixi-managed commands only (`pixi run test`, `pixi run lint`, etc.).
+
 ### Story 1.1: Create Habit With Tiered Completion Definition
 
 Agent Prompt Starter: Implement Story 1.1 in `backend/src/apps/habits`, `frontend/src/features/tiered-completion`, and related tests only; create the minimum API/UI/model changes for tiered habit creation and validate with `pixi run test && pixi run lint && pixi run typecheck`.
@@ -287,6 +303,22 @@ So that interruptions feel recoverable instead of punitive.
 **When** status text is rendered
 **Then** prohibited punitive terms are blocked by policy checks
 **And** displayed labels use approved neutral language vocabulary.
+
+### Story 1.6: Establish Instrumentation Primitives Before Recovery Flows
+
+Agent Prompt Starter: Implement Story 1.6 in `backend/src/common/instrumentation`, `backend/src/common/time`, and backend tests only; define minimum viable recovery-event schema, versioning, timezone-safe timestamp semantics, and emission helpers needed by recovery stories, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
+
+As a developer,
+I want a minimum viable recovery-event schema and emission helpers available before recovery stories begin,
+So that early recovery slices can satisfy their own acceptance criteria without forward dependencies.
+
+**Acceptance Criteria:**
+
+**Given** the baseline backend scaffold exists
+**When** instrumentation primitives are implemented
+**Then** the minimum schema version, event names, and metadata contract for interruption and comeback flows are defined
+**And** timezone-safe timestamps are written consistently at the shared event boundary
+**And** Epic 2 stories can emit required recovery events (habit_interrupted, comeback_card_shown, *_completion_logged, planned_comeback_created, planned_comeback_completed) without depending on future analytics work.
 
 ## Epic 2: Daily Logging & Comeback Actions
 
@@ -465,9 +497,9 @@ So that I trust that my progress is not lost.
 
 Support cohort validation with reliable event capture, tier-level reporting, and exportable recovery metrics.
 
-### Story 4.1: Event Schema and Instrumentation Pipeline
+### Story 4.1: Extend and Validate Analytics Pipeline With Cohort Analysis Support
 
-Agent Prompt Starter: Implement Story 4.1 in `backend/src/common/instrumentation`, `backend/src/common/time`, and backend tests only; define the stable event schema and emission helpers needed by recovery flows, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
+Agent Prompt Starter: Implement Story 4.1 in `backend/src/apps/insights`, `backend/src/common/instrumentation`, and backend tests only; extend the stable event schema and emission helpers (already established in Story 1.6) with analytics aggregation, cohort grouping, and machine-readable export support for validation study analysis, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
 
 As a maintainer,
 I want a stable, versioned event schema for recovery interactions,
@@ -527,7 +559,7 @@ So that baseline vs treatment cohort analysis is reproducible.
 
 ## Epic 5: UX Accessibility & Responsive Quality
 
-Implement the UX specification’s recovery-first interaction quality so flows remain clear, accessible, and trustworthy across supported environments.
+Implement the UX specification's recovery-first interaction quality so users experience calm, clear, accessible flows that confirm save confidence and remain functional across supported environments. This epic ensures user outcomes are met: safe recovery experiences, fast core actions, and trustworthy interaction states.
 
 ### Story 5.1: Implement Calm Recovery Theme Tokens
 
@@ -544,9 +576,22 @@ So that recovery tasks feel safe and easy to complete.
 **Then** colors, typography, and spacing follow documented recovery-first semantics
 **And** status meaning is never conveyed by color alone.
 
-### Story 5.2: Build RecoveryCard and RecoveryQueuePanel Components
+### Story 5.2: Users Can Complete Recovery Actions With Clear Save Feedback and Keyboard Support
 
-Agent Prompt Starter: Implement Story 5.2 in `frontend/src/features/comeback-card`, `frontend/src/shared/ui`, and related tests only; build the `RecoveryCard` component with defined states and keyboard semantics, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
+Agent Prompt Starter: Implement Story 5.2 in `frontend/src/features/comeback-card`, `frontend/src/shared/ui`, and related tests only; ensure recovery card displays with clear save-state feedback, keyboard navigation, and explicit action confirmation, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
+
+As a user recovering from an interruption,
+I want clear confirmation that my recovery action was saved and working as expected,
+So that I can restart habits with confidence.
+
+**Acceptance Criteria:**
+
+**Given** I interact with a recovery card on any modern browser and keyboard setup
+**When** I complete a recovery action (choose minimum completion now or plan tomorrow)
+**Then** the action completes without page navigation
+**And** visible save-state feedback appears immediately (e.g., "Recovery recorded" or "Comeback planned for Thursday")
+**And** if the action fails, I receive a clear retry path without losing context
+**And** all buttons and interactive elements are keyboard-reachable and properly labeled for screen readers.
 
 As a user,
 I want a purpose-built recovery card component,
@@ -604,24 +649,27 @@ So that recovery workflows are usable without a mouse or color cues.
 **Then** focus order, visible focus, and ARIA live announcements pass baseline criteria
 **And** contrast/semantic labeling meets WCAG 2.1 AA requirements.
 
-### Story 5.6: Responsive and Browser Compatibility Hardening
+### Story 5.5: Implement Responsive and Accessible UI Infrastructure
 
-Agent Prompt Starter: Implement Story 5.6 in `frontend/src/features/*`, `frontend/src/shared/ui`, and responsive/integration tests only; harden supported breakpoints and evergreen browser behavior without changing core interaction order, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
+Agent Prompt Starter: Implement Story 5.5 in `frontend/src/shared/ui`, `frontend/src/styles`, and theme token integration only; wire calm recovery theme tokens, responsive utilities, and accessible component primitives, then validate with `pixi run test && pixi run lint && pixi run typecheck`.
 
-As a user on different devices,
-I want reliable behavior on supported browsers and widths,
-So that I can recover habits consistently wherever I log.
+As a developer building recovery flows,
+I want shared UI infrastructure that enforces calm design and accessibility,
+So that every feature inherits the recovery-first interaction patterns.
 
 **Acceptance Criteria:**
 
-**Given** mobile, tablet, and desktop breakpoints on evergreen browsers
-**When** core journeys are exercised
-**Then** interaction order remains consistent and functional
-**And** layout changes preserve primary-action prominence and performance targets.
+**Given** the calm recovery design system
+**When** I build recovery components
+**Then** theme tokens (colors, typography, spacing) apply neutral semantics automatically
+**And** all primitive components (buttons, inputs, panels) include keyboard focus, ARIA labels, and contrast-safe states by default
+**And** responsive breakpoint utilities keep recovery-first action prominence consistent across widths.
 
-## Epic 6: Adaptive Recommendations With User Control
+## Epic 6: Adaptive Recommendations With User Control (Post-MVP Gated)
 
-Deliver adaptive suggestions safely through explicit preview, opt-in application, and reversible changes.
+**Status: Post-MVP — Deferred after MVP validation for adaptive recommendation safety and learning optimization.**
+
+Deliver adaptive suggestions safely through explicit preview, opt-in application, and reversible changes. Stories in this epic require confidence from baseline MVP cohort behavior before advanced personalization begins.
 
 ### Story 6.1: Generate Adaptive Recommendation Candidates
 
