@@ -44,6 +44,35 @@ Task usage rules:
 - Use targeted task execution first (e.g., specific tests), then broader gates.
 - Before final handoff, run the smallest relevant validation set and report results.
 
+### Command Execution Guardrails
+
+- Treat **Pixi as the required entry point** for all project-related commands.
+- Do **not** run project commands directly from the system path when a Pixi-backed equivalent exists.
+- Prefer `pixi run <task>` for named workflows and `pixi exec <command>` for one-off commands that must run inside the project environment.
+- If a command is not available through Pixi yet, propose adding a Pixi task instead of falling back to an unmanaged system command.
+
+Required patterns:
+- Run app or scripts: `pixi run start` or another defined Pixi task
+- Run tests: `pixi run test`
+- Run linting: `pixi run lint`
+- Run formatting: `pixi run format`
+- Run type checking: `pixi run typecheck`
+- Run builds: `pixi run build`
+- Run CI-style validation: `pixi run ci`
+- Run Python modules or one-off Python commands: `pixi exec python ...`
+
+Avoid these unmanaged patterns for project work:
+- `python ...`
+- `pytest ...`
+- `ruff ...`
+- `mypy ...`
+- `pip install ...`
+- `hatch run ...`
+- `python -m build`
+
+Allowed exception:
+- Non-project system inspection commands such as `ls`, `cat`, `find`, `git status`, or `pwd` do not need to run through Pixi.
+
 ## 4) Python Code Standards
 
 - Use explicit type hints for public APIs and non-trivial internals.
