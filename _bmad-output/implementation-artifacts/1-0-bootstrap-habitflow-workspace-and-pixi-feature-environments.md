@@ -202,6 +202,16 @@ From `_bmad-output/planning-artifacts/architecture.md`:
 - [x] **Defer** — Structured logging framework not present [backend/pyproject.toml]. Architecture specifies "Python 3.12+ with structured logging" but no logging framework is included. Noted in story as pre-existing; deferred to future story that requires logging.
 - [x] **Dismiss** — Bootstrap test does not verify Pixi tasks are executable. Acceptance criteria require tasks to be "executable through Pixi-managed commands only", but test validates structure, not task executability. All tasks manually verified; this is a false positive.
 
+### Re-run Review Findings (2026-04-26)
+
+- [x] **Patch** — Frontend dependency installation runs on every frontend task [habitflow-web/pixi.toml]. Multiple tasks depend on `install-frontend-deps`, which executes `npm install` each run. This adds avoidable runtime/network risk; move to deterministic install behavior (e.g., `npm ci` with explicit bootstrap stage or cached guard).
+- [x] **Patch** — Backend bootstrap import test can pass against wrong package source [habitflow-web/backend/test/test_bootstrap.py]. Global `sys.path` insertion may still allow false-positive imports if another `habitflow` installation shadows expected source; assert imported module path resolves under backend `src/habitflow`.
+- [x] **Patch** — Backend build task does not preflight README metadata dependency [habitflow-web/pixi.toml]. `pyproject.toml` requires `readme = "README.md"`; add explicit `test -f backend/README.md` guard before build to fail early and clearly.
+- [x] **Defer** — npm audit vulnerabilities remain non-blocking for bootstrap acceptance [habitflow-web/frontend]. CI reports 13 vulnerabilities (3 low, 4 moderate, 6 high); track and remediate in dependency-maintenance story.
+- [x] **Defer** — TypeScript-eslint compatibility warning persists [habitflow-web/frontend toolchain]. Lint passes but warns on TypeScript 5.9.x support window; align versions in tooling-upgrade story.
+- [x] **Dismiss** — `strictPort: true` startup failures when port 3000 is occupied [habitflow-web/frontend/vite.config.ts]. This is expected from resolved decision and supports deterministic screenshot capture.
+- [x] **Dismiss** — Partial pinning strategy across frontend dependencies [habitflow-web/frontend/package.json]. Tightening only MUI/Emotion/jsdom is acceptable scope for this story and not a blocker.
+
 ## Status
 
 **Current Status:** done

@@ -10,6 +10,10 @@ def test_habitflow_package_imports() -> None:
     """Verify that the habitflow package can be imported successfully."""
     import habitflow
 
+    expected_package_path = (Path(__file__).resolve().parent.parent / "src" / "habitflow").resolve()
+    actual_package_path = Path(habitflow.__file__).resolve().parent
+
+    assert actual_package_path == expected_package_path
     assert habitflow.__version__ == "0.1.0"
     assert habitflow.__author__ == "Kevin Mills"
 

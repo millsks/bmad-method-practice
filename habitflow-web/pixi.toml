@@ -21,7 +21,7 @@ features = ["backend", "frontend"]
 
 # Shared tasks for the workspace
 [tasks]
-install-frontend-deps = "npm --prefix frontend install"
+install-frontend-deps = "test -d frontend/node_modules || npm --prefix frontend ci"
 
 test-backend = "test -d backend/test && pytest backend/test -q"
 test-frontend = { cmd = "npm --prefix frontend run test", depends-on = ["install-frontend-deps"] }
@@ -39,7 +39,7 @@ typecheck-backend = "test -d backend/src && mypy backend/src"
 typecheck-frontend = { cmd = "npm --prefix frontend run typecheck", depends-on = ["install-frontend-deps"] }
 typecheck = { cmd = "pixi run typecheck-backend && pixi run typecheck-frontend", description = "Type check all code" }
 
-build-backend = "test -f backend/pyproject.toml && python -m build backend"
+build-backend = "test -f backend/pyproject.toml && test -f backend/README.md && python -m build backend"
 build-frontend = { cmd = "npm --prefix frontend run build", depends-on = ["install-frontend-deps"] }
 build = { cmd = "pixi run build-backend && pixi run build-frontend", description = "Build all packages" }
 
