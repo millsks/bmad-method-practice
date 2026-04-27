@@ -1,9 +1,25 @@
-"""Story 1.1 tests for tiered habit creation and queue visibility."""
+"""Story 1.1 and 1.2 tests for tiered habit creation, editing, and queue visibility."""
 
-from apps.habits.api import create_habit_from_payload, reset_habit_store
+from apps.habits.api import create_habit_from_payload, reset_habit_store, update_habit_from_payload
 from apps.habits.models import HabitCreateRequest, HabitTierTargets
 from apps.habits.repository import HabitRepository
 from apps.habits.service import HabitService
+
+
+def _make_habit(service: HabitService) -> str:
+    created = service.create_habit(
+        HabitCreateRequest(
+            name="Hydration",
+            cadence="daily",
+            time_window="Morning",
+            tiers=HabitTierTargets(
+                full="Drink 64oz water",
+                reduced="Drink 32oz water",
+                minimum="Drink 8oz water",
+            ),
+        )
+    )
+    return created.id
 
 
 def test_create_habit_stores_distinct_tier_targets() -> None:
@@ -138,3 +154,92 @@ def test_api_create_habit_accepts_flat_backend_shape() -> None:
     assert created.name == "Read"
     assert created.time_window == "Evening"
     assert created.tiers.full == "Read 30 pages"
+
+
+def test_update_habit_changes_current_configuration_for_future_use() -> None:
+    repository = HabitRepository()
+    service = HabitService(repository)
+    created_id = _make_habit(service)
+
+    updated = service.update_habit(
+        created_id,
+        HabitCreateRequest(
+            name="Hydration",
+            cadence="flexible",
+            time_window="Lunch",
+            tiers=HabitTierTargets(
+                full="Drink 80oz water",
+                reduced="Drink 40oz water",
+                minimum="Drink 12oz water",
+            ),
+        ),
+    )
+
+    queue = service.get_daily_queue()
+
+    assert updated.id == created_id
+    assert updated.cadence == "flexible"
+    assert updated.time_window == "Lunch"
+    assert updated.tiers.minimum == "Drink 12oz water"
+    assert queue[0].cadence == "flexible"
+
+
+def test_update_habit_preserves_previous_configuration_history() -> None:
+    repository = HabitRepository()
+    service = HabitService(repository)
+    created_id = _make_habit(service)
+
+    updated = service.update_habit(
+        created_id,
+        HabitCreateRequest(
+            name="Hydration",
+            cadence="flexible",
+            time_window="Evening",
+            tiers=HabitTierTargets(
+                full="Drink 72oz water",
+                reduced="Drink 36oz water",
+                minimum="Drink 12oz water",
+            ),
+        ),
+    )
+
+    history = service.get_habit_history(created_id)
+
+    assert len(history) == 1
+    assert history[0].cadence == "daily"
+    assert history[0].time_window == "Morning"
+    assert history[0].tiers.full == "Drink 64oz water"
+    assert updated.configuration_version == 2
+
+
+def test_api_update_habit_accepts_nested_frontend_shape() -> None:
+    reset_habit_store()
+    created = create_habit_from_payload(
+        {
+            "name": "Read",
+            "cadence": "daily",
+            "timeWindow": "Morning",
+            "tiers": {
+                "full": "Read 20 pages",
+                "reduced": "Read 10 pages",
+                "minimum": "Read 2 pages",
+            },
+        }
+    )
+
+    updated = update_habit_from_payload(
+        {
+            "id": created.id,
+            "name": "Read",
+            "cadence": "flexible",
+            "timeWindow": "Evening",
+            "tiers": {
+                "full": "Read 30 pages",
+                "reduced": "Read 15 pages",
+                "minimum": "Read 5 pages",
+            },
+        }
+    )
+
+    assert updated.id == created.id
+    assert updated.cadence == "flexible"

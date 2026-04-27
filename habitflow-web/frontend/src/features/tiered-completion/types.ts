@@ -12,6 +12,8 @@ export interface Habit {
   cadence: Cadence
   timeWindow: string
   tiers: TierTargets
+  configurationVersion: number
+  configurationHistory: HabitConfigurationSnapshot[]
 }
 
 export interface HabitCreateInput {
@@ -19,4 +21,12 @@ export interface HabitCreateInput {
   cadence: Cadence
   timeWindow: string
   tiers: TierTargets
+}
+
+export interface HabitConfigurationSnapshot {
+  name: string
+  cadence: Cadence
+  timeWindow: string
+  tiers: TierTargets
+  version: number
 }
