@@ -44,6 +44,8 @@ function TieredHabitCreatePanel(): JSX.Element {
   const [editingHabitId, setEditingHabitId] = useState<string | null>(null)
 
   const hasQueueItems = useMemo(() => queue.length > 0, [queue.length])
+  const saveStateSeverity =
+    saveState === 'Retry' ? 'error' : saveState === 'Saving…' ? 'info' : 'success'
 
   const updateField = (field: keyof FormState, value: string): void => {
     setForm((prev) => ({ ...prev, [field]: value }))
@@ -82,7 +84,7 @@ function TieredHabitCreatePanel(): JSX.Element {
       if (submitError instanceof Error) {
         setError(submitError.message)
       } else {
-        setError('Unable to create habit')
+        setError(editingHabitId ? 'Unable to save habit changes' : 'Unable to create habit')
       }
     }
   }
@@ -122,7 +124,7 @@ function TieredHabitCreatePanel(): JSX.Element {
           </Typography>
 
           {saveState ? (
-            <Alert severity={saveState === 'Retry' ? 'error' : 'success'} sx={{ mb: 2 }} role="status">
+            <Alert severity={saveStateSeverity} sx={{ mb: 2 }} role="status">
               {saveState}
             </Alert>
           ) : null}

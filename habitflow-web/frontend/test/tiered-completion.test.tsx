@@ -84,6 +84,9 @@ describe('Story 1.1 tiered habit creation', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Edit habit' }))
 
+    fireEvent.mouseDown(screen.getByLabelText('Cadence'))
+    fireEvent.click(screen.getByRole('option', { name: 'Flexible' }))
+
     fireEvent.change(screen.getByLabelText('Time window'), {
       target: { value: 'Evening' },
     })
@@ -102,7 +105,7 @@ describe('Story 1.1 tiered habit creation', () => {
     expect(screen.getByRole('status')).toHaveTextContent('Saved updated habit configuration')
     expect(
       screen.getByText(
-        'Cadence: daily · Window: Evening · Full: Drink 80oz water · Reduced: Drink 40oz water · Minimum: Drink 12oz water'
+        'Cadence: flexible · Window: Evening · Full: Drink 80oz water · Reduced: Drink 40oz water · Minimum: Drink 12oz water'
       )
     ).toBeInTheDocument()
     expect(screen.getByText('Previous configurations remain visible')).toBeInTheDocument()

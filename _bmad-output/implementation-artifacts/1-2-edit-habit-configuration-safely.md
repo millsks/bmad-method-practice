@@ -55,6 +55,13 @@ So that my habit remains realistic as my schedule changes.
   - [x] Update File List with changed files
   - [x] Update Change Log and Dev Agent Record with implementation details
 
+### Review Findings
+
+- [x] \[Review\]\[Defer\] Clarify whether Story 1.2 requires frontend edits to persist via backend API — deferred to a follow-on story; baseline persistence can default to SQLite.
+- [x] \[Review\]\[Patch\] Show neutral pending save state instead of success styling while `Saving…` is active [habitflow-web/frontend/src/features/tiered-completion/TieredHabitCreatePanel.tsx:125]
+- [x] \[Review\]\[Patch\] Use edit-specific fallback error copy (not "Unable to create habit") when update fails [habitflow-web/frontend/src/features/tiered-completion/TieredHabitCreatePanel.tsx:85]
+- [x] \[Review\]\[Patch\] Add an edit-flow assertion that cadence changes (`daily` → `flexible`) to fully cover Story 1.2 AC [habitflow-web/frontend/test/tiered-completion.test.tsx:65]
+
 ## Dev Notes
 
 ### Scope and Boundaries
@@ -100,6 +107,7 @@ From Story 1.1:
 - **2026-04-27**: Story created and set to in-progress for implementation.
 - **2026-04-27**: Implemented safe habit configuration edits with preserved backend/frontend history and visible edit/save feedback.
 - **2026-04-27**: Validated Story 1.2 with `pixi run test`, `pixi run lint`, and `pixi run typecheck`.
+- **2026-04-27**: Code review follow-up applied (save-state severity, edit-specific fallback message, cadence-change test assertion) and revalidated with Pixi.
 
 ## Dev Agent Record
 
@@ -117,6 +125,7 @@ From Story 1.1:
 - Added backend configuration snapshots, update operations, and update/list-history API helpers.
 - Extended frontend in-memory habit store and UI to support editing, saved-state messaging, cancel edit flow, and visible prior configuration history.
 - Validated backend and frontend behavior through Pixi-managed test, lint, and typecheck tasks.
+- Applied all approved review patch findings and reran `pixi run test`, `pixi run lint`, and `pixi run typecheck` successfully.
 
 ### Completion Notes
 
@@ -127,8 +136,9 @@ From Story 1.1:
 - Added backend tests for update behavior, preserved history, and update payload handling.
 - Added frontend tests for editing an existing habit and showing prior configuration history after save.
 - Pixi validation completed successfully: `pixi run test`, `pixi run lint`, `pixi run typecheck`.
+- Review patch updates complete: pending save state now neutral (`info`), non-Error fallback copy is edit-aware, and the edit-flow test verifies cadence updates to `flexible`.
 
 ## Status
 
-**Current Status:** review
-**Ready for Review:** Yes
+**Current Status:** done
+**Ready for Review:** No

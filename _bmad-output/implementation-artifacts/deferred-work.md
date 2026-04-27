@@ -8,3 +8,7 @@
 
 - npm audit vulnerabilities remain non-blocking for bootstrap acceptance (`habitflow-web/frontend`): CI reports 13 vulnerabilities; track and remediate in dependency-maintenance story.
 - TypeScript-eslint compatibility warning persists (`habitflow-web/frontend` toolchain): lint passes with TypeScript 5.9.x warning; align versions in tooling-upgrade story.
+
+## Deferred from: code review of 1-2-edit-habit-configuration-safely.md (2026-04-27)
+
+- Frontend-to-backend persistence wiring for edit/create flow is deferred to a follow-on story; use SQLite as the default database baseline for that implementation.
