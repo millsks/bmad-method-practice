@@ -109,3 +109,10 @@ pnpm-debug.log*
 vite.svg
 *.tsbuildinfo
 coverage/
+
+# HabitFlow workspace outputs
+habitflow-web/frontend/dist/
+habitflow-web/frontend/coverage/
+habitflow-web/frontend/.vite/
+habitflow-web/backend/.pytest_cache/
+habitflow-web/backend/.ruff_cache/

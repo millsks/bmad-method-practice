@@ -2,7 +2,7 @@
 story_key: 1-0-bootstrap-habitflow-workspace-and-pixi-feature-environments
 epic: 1
 title: Bootstrap HabitFlow Workspace and Pixi Feature Environments
-status: in-progress
+status: done
 created: 2026-04-26
 last_updated: 2026-04-26
 ---
@@ -176,7 +176,33 @@ From `_bmad-output/planning-artifacts/architecture.md`:
 - Validation commands are documented and confirmed passing via `pixi run ci`.
 - Frontend bootstrap UI screenshot captured at `habitflow-web/docs/screenshots/story-1-0-bootstrap-home.png`.
 
+## Review Findings
+
+### Decision Needed
+
+- [x] **Decision** — Vite `strictPort: false` breaks hardcoded localhost:3000 screenshot task. **RESOLVED:** Pin `strictPort: true` to guarantee port 3000 binding.
+
+### Patches
+
+- [x] **Patch** — Shell command error handling lacks strict exit semantics [pixi.toml:25-58]. Composite tasks use `cd` chains with `&&`, but no `set -e` enforces strict failure exit. If any step fails mid-chain, subsequent commands may still execute in the wrong directory.
+- [x] **Patch** — Build command now runs through Pixi-managed task flow [pixi.toml, build-backend task]. Backend build executes via `pixi run build-backend` inside the Pixi environment as part of `pixi run build` / `pixi run ci`.
+- [x] **Patch** — Frontend dependencies not enforced before composite tasks [pixi.toml:26]. Tasks assume `node_modules` exists, but `install-frontend-deps` is manual and separate. Running `pixi run test` without first running `install-frontend-deps` will fail with module resolution errors.
+- [x] **Patch** — Hatch package configuration validated for compatibility [backend/pyproject.toml:16]. Kept supported Hatch syntax `packages = ["src/habitflow"]` after confirming wheel and sdist builds pass.
+- [x] **Patch** — Backend bootstrap test assumes habitflow in PYTHONPATH [backend/test/test_bootstrap.py]. Test imports `habitflow` without ensuring it's in `sys.path` or installed editable. Should add `sys.path.insert(0, str(Path(__file__).parent.parent / "src"))` guard.
+- [x] **Patch** — pytest-cov dependency declared but not configured [backend/pyproject.toml:15]. `pytest-cov>=4.1` is in dependencies but never used. Either configure coverage in `pyproject.toml` or remove the dependency.
+- [x] **Patch** — Backend runtime dependencies empty despite package structure [backend/pyproject.toml:10]. `dependencies = []` but the package scaffold suggests it may need transitive dependencies. Verify and declare explicitly or remove the entry.
+- [x] **Patch** — Complex 600+ character CI task vulnerable to metacharacter injection [pixi.toml:47]. Long single-line `ci` task with 8 `cd ../` sequences is hard to maintain and vulnerable to shell injection. Should split into smaller, composable tasks.
+- [x] **Patch** — No directory existence validation before cd/test execution [pixi.toml, all tasks]. Commands assume `backend/test`, `frontend/` directories exist. Should add guards like `[[ -d backend/test ]] || exit 1` before task execution.
+- [x] **Patch** — jsdom and MUI/Emotion dependency versions have loose semantic ranges [frontend/package.json:22, 15-17]. `jsdom ^22.1.0` and `@emotion/react ^11.11.0` use loose ranges. Tighten to tested ranges (e.g., `~22.1.0`) to prevent unexpected incompatibilities with Node 18.
+- [x] **Patch** — Missing .gitignore entries for build/cache artifacts [root, backend, frontend]. No .gitignore entries for `node_modules/`, `dist/`, `.pytest_cache/`, `.ruff_cache/`. Should add these to avoid accidental commits and improve reproducibility.
+- [x] **Patch** — README lacks architecture constraint documentation [habitflow-web/README.md]. README documents available tasks but not key architecture constraints (structured logging, recovery UI ownership, API boundary `/api/v1/`, workspace isolation principles). Should add a Design Principles section or link to `architecture.md`.
+
+### Deferred
+
+- [x] **Defer** — Structured logging framework not present [backend/pyproject.toml]. Architecture specifies "Python 3.12+ with structured logging" but no logging framework is included. Noted in story as pre-existing; deferred to future story that requires logging.
+- [x] **Dismiss** — Bootstrap test does not verify Pixi tasks are executable. Acceptance criteria require tasks to be "executable through Pixi-managed commands only", but test validates structure, not task executability. All tasks manually verified; this is a false positive.
+
 ## Status
 
-**Current Status:** review
-**Ready for Review:** Yes
+**Current Status:** done
+**Ready for Review:** Review actions complete

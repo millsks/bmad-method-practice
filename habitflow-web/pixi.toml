@@ -21,33 +21,34 @@ features = ["backend", "frontend"]
 
 # Shared tasks for the workspace
 [tasks]
-test-backend = "pytest backend/test -q"
-test-frontend = "cd frontend && npm run test"
-install-frontend-deps = "cd frontend && npm install"
-test = { cmd = "pytest backend/test -q && cd frontend && npm run test", description = "Run all tests" }
+install-frontend-deps = "npm --prefix frontend install"
 
-lint-backend = "ruff check backend/src backend/test"
-lint-frontend = "cd frontend && npm run lint"
-lint = { cmd = "ruff check backend/src backend/test && cd frontend && npm run lint", description = "Run all linting" }
+test-backend = "test -d backend/test && pytest backend/test -q"
+test-frontend = { cmd = "npm --prefix frontend run test", depends-on = ["install-frontend-deps"] }
+test = { cmd = "pixi run test-backend && pixi run test-frontend", description = "Run all tests" }
 
-format-backend = "ruff format backend/src backend/test"
-format-frontend = "cd frontend && npm run format"
-format = { cmd = "ruff format backend/src backend/test && cd frontend && npm run format", description = "Format all code" }
+lint-backend = "test -d backend/src && test -d backend/test && ruff check backend/src backend/test"
+lint-frontend = { cmd = "npm --prefix frontend run lint", depends-on = ["install-frontend-deps"] }
+lint = { cmd = "pixi run lint-backend && pixi run lint-frontend", description = "Run all linting" }
 
-typecheck-backend = "mypy backend/src"
-typecheck-frontend = "cd frontend && npm run typecheck"
-typecheck = { cmd = "mypy backend/src && cd frontend && npm run typecheck", description = "Type check all code" }
+format-backend = "test -d backend/src && test -d backend/test && ruff format backend/src backend/test"
+format-frontend = { cmd = "npm --prefix frontend run format", depends-on = ["install-frontend-deps"] }
+format = { cmd = "pixi run format-backend && pixi run format-frontend", description = "Format all code" }
 
-build-backend = "python -m build backend"
-build-frontend = "cd frontend && npm run build"
-build = { cmd = "python -m build backend && cd frontend && npm run build", description = "Build all packages" }
+typecheck-backend = "test -d backend/src && mypy backend/src"
+typecheck-frontend = { cmd = "npm --prefix frontend run typecheck", depends-on = ["install-frontend-deps"] }
+typecheck = { cmd = "pixi run typecheck-backend && pixi run typecheck-frontend", description = "Type check all code" }
 
-ci = { cmd = "ruff check backend/src backend/test && cd frontend && npm run lint && cd .. && mypy backend/src && cd frontend && npm run typecheck && cd .. && pytest backend/test -q && cd frontend && npm run test && cd .. && python -m build backend && cd frontend && npm run build", description = "Full CI validation" }
+build-backend = "test -f backend/pyproject.toml && python -m build backend"
+build-frontend = { cmd = "npm --prefix frontend run build", depends-on = ["install-frontend-deps"] }
+build = { cmd = "pixi run build-backend && pixi run build-frontend", description = "Build all packages" }
+
+ci = { cmd = "pixi run lint && pixi run typecheck && pixi run test && pixi run build", description = "Full CI validation" }
 
 start-info = "echo 'HabitFlow development environment ready. Use pixi run start to launch frontend dev server.'"
-start = "cd frontend && npm run dev"
-install-playwright-browser = "cd frontend && npm exec playwright install chromium"
-screenshot-home = "cd frontend && npm exec playwright screenshot --device='Desktop Chrome' http://localhost:3000 ../docs/screenshots/story-1-0-bootstrap-home.png"
+start = { cmd = "npm --prefix frontend run dev", depends-on = ["install-frontend-deps"] }
+install-playwright-browser = { cmd = "npm --prefix frontend exec playwright install chromium", depends-on = ["install-frontend-deps"] }
+screenshot-home = { cmd = "npm --prefix frontend exec playwright screenshot --device='Desktop Chrome' http://localhost:3000 ../docs/screenshots/story-1-0-bootstrap-home.png", depends-on = ["install-frontend-deps"] }
 
 # Backend feature
 [feature.backend.dependencies]

@@ -164,6 +164,14 @@ pixi run -e frontend npm --prefix frontend run test
 - **Type Safety**: TypeScript in frontend, type hints in backend with mypy validation
 - **Testing**: Unit and integration tests for all major functionality
 
+## Architecture Constraints
+
+- **Backend Runtime**: Python 3.12+ with structured logging introduced in a follow-on story
+- **Frontend Runtime**: React + TypeScript + MUI component stack
+- **API Boundary**: Backend endpoints organized under `/api/v1/` domain groups
+- **Workspace Isolation**: `backend` and `frontend` isolated via Pixi feature environments
+- **Execution Contract**: Project workflows must remain executable via `pixi run <task>`
+
 ## Adding Dependencies
 
 ### Backend Dependencies
@@ -190,7 +198,7 @@ pixi update
 
 - [Backend README](backend/README.md) - Backend setup and API documentation
 - [Frontend README](frontend/README.md) - Frontend setup and component documentation
-- [Architecture](docs/ARCHITECTURE.md) - System design and technical decisions
+- [Architecture](../_bmad-output/planning-artifacts/architecture.md) - System design and technical decisions
 
 ## Contributing
 
