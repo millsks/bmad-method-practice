@@ -1,5 +1,6 @@
 import React from 'react'
 import { Container, Typography, Box } from '@mui/material'
+import TieredHabitCreatePanel from './features/tiered-completion/TieredHabitCreatePanel'
 
 /**
  * Root component for HabitFlow application
@@ -15,6 +16,7 @@ function App(): React.ReactElement {
           Recovery-first habit tracking for better continuity
         </Typography>
       </Box>
+      <TieredHabitCreatePanel />
     </Container>
   )
 }
