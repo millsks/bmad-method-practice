@@ -2,7 +2,7 @@
 story_key: 1-1-create-habit-with-tiered-completion-definition
 epic: 1
 title: Create Habit With Tiered Completion Definition
-status: review
+status: done
 created: 2026-04-26
 last_updated: 2026-04-26
 ---
@@ -55,6 +55,14 @@ So that I can preserve continuity even on low-capacity days.
   - [x] Update File List with changed files
   - [x] Update Change Log and Dev Agent Record with implementation details
 
+### Review Findings
+
+- [x] \[Review\]\[Patch\] Validate API payload keys/types before casting to strings [habitflow-web/backend/src/apps/habits/api.py:14]
+- [x] \[Review\]\[Patch\] Enforce runtime cadence validation (`daily|flexible`) in request model [habitflow-web/backend/src/apps/habits/models.py:37]
+- [x] \[Review\]\[Patch\] Align frontend/backend create-habit contract (nested camelCase vs flat snake_case mismatch) [habitflow-web/frontend/src/features/tiered-completion/habitsApi.ts:30]
+- [x] \[Review\]\[Patch\] Remove committed generated frontend build artifacts from `frontend/src` and restore extensionless test imports [habitflow-web/frontend/test/bootstrap.test.tsx:5]
+- [x] \[Review\]\[Patch\] Return deep-copied queue objects from frontend in-memory store to prevent external mutation leakage [habitflow-web/frontend/src/features/tiered-completion/habitsApi.ts:47]
+
 ## Dev Notes
 
 ### Scope and Boundaries
@@ -95,6 +103,7 @@ From Story 1.0:
 - [x] `habitflow-web/frontend/src/features/tiered-completion/TieredHabitCreatePanel.tsx`
 - [x] `habitflow-web/frontend/test/bootstrap.test.tsx`
 - [x] `habitflow-web/frontend/test/tiered-completion.test.tsx`
+- [x] `.gitignore`
 - [x] `_bmad-output/implementation-artifacts/1-1-create-habit-with-tiered-completion-definition.md`
 - [x] `_bmad-output/implementation-artifacts/sprint-status.yaml`
 
@@ -102,6 +111,7 @@ From Story 1.0:
 
 - **2026-04-26**: Story created and set to in-progress for implementation.
 - **2026-04-26**: Story 1.1 implemented with backend tiered habit domain, frontend add-habit flow, and queue visibility tests.
+- **2026-04-26**: Applied all Story 1.1 code-review patches (validation hardening, payload alignment, deep-copy queue reads, and generated artifact cleanup).
 
 ## Dev Agent Record
 
@@ -118,8 +128,9 @@ From Story 1.0:
 - Started Story 1.1 implementation workflow.
 - Implemented backend `apps/habits` models, repository, service, and payload helper.
 - Implemented frontend `tiered-completion` feature with add-habit form and daily queue rendering.
-- Resolved Vitest import resolution issue by targeting `App.tsx` directly in tests.
-- Validation run results: `pixi run test` ✅, `pixi run lint` ✅ (TypeScript-eslint support warning only), `pixi run typecheck` ✅.
+- Applied review hardening: API payload validation, runtime cadence validation, and dual-shape payload support.
+- Removed generated frontend artifacts from `frontend/src` and restored extensionless test imports.
+- Validation rerun after review patches: `pixi run test` ✅, `pixi run lint` ✅ (TypeScript-eslint support warning only), `pixi run typecheck` ✅.
 
 ### Completion Notes
 
@@ -128,9 +139,10 @@ From Story 1.0:
   - Created habit is immediately available in the daily queue UI.
   - Tier values are stored and validated as distinct actionable targets in backend and frontend models.
 - Added backend unit tests for tier persistence, queue inclusion, and distinct-tier validation.
+- Added backend tests for cadence validation and payload-shape compatibility.
 - Added frontend tests for successful create flow and duplicate-tier rejection behavior.
 
 ## Status
 
-**Current Status:** review
+**Current Status:** done
 **Ready for Review:** Yes

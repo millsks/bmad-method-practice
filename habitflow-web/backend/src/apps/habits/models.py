@@ -41,6 +41,9 @@ class HabitCreateRequest:
         if not self.name.strip():
             raise ValueError("Habit name is required")
 
+        if self.cadence not in ("daily", "flexible"):
+            raise ValueError("Cadence must be daily or flexible")
+
         if not self.time_window.strip():
             raise ValueError("Time window is required")
 

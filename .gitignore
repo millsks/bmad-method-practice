@@ -116,3 +116,9 @@ habitflow-web/frontend/coverage/
 habitflow-web/frontend/.vite/
 habitflow-web/backend/.pytest_cache/
 habitflow-web/backend/.ruff_cache/
+
+# Generated frontend artifacts (source-of-truth is TypeScript)
+habitflow-web/frontend/src/**/*.js
+habitflow-web/frontend/src/**/*.js.map
+habitflow-web/frontend/src/**/*.d.ts
+habitflow-web/frontend/src/**/*.d.ts.map

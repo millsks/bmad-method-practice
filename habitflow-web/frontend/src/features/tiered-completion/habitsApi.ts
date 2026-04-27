@@ -46,7 +46,12 @@ export const createHabit = (input: HabitCreateInput): Habit => {
 }
 
 export const getDailyQueue = (): Habit[] => {
-  return [...habits]
+  return habits.map((habit) => ({
+    ...habit,
+    tiers: {
+      ...habit.tiers,
+    },
+  }))
 }
 
 export const resetHabitStore = (): void => {

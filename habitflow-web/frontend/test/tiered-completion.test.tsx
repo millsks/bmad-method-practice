@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it } from 'vitest'
 import { fireEvent, render, screen } from '@testing-library/react'
 import '@testing-library/jest-dom'
-import App from '../src/App.tsx'
+import App from '../src/App'
 import { resetHabitStore } from '../src/features/tiered-completion/habitsApi'
 
 describe('Story 1.1 tiered habit creation', () => {
